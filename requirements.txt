@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pydantic
+qdrant-client
+pdfplumber
+python-dotenv
+langchain
+sentence-transformers
+langchain-community
+python-multipart
+rapidocr-onnxruntime
+mistralai
+streamlit
