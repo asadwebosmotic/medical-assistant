@@ -1,35 +1,37 @@
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import JSONResponse
 from llm.llm_config import chat_chain
-from data_processing.parsing import extract
-import tempfile
-import os
-import shutil
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
 @app.post("/chat/")
 async def chat_with_report(
-    file: UploadFile = File(...),
-    user_input: str = Form(...)
+    report_text: str = Form(""),
+    user_input: str = Form(...),
+    medical_history: str = Form(None)
 ):
     try:
-        # Save uploaded file to a temp location
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-            shutil.copyfileobj(file.file, tmp)
-            tmp_path = tmp.name
+        # Validate inputs
+        if not user_input.strip():
+            logger.error("User input is empty")
+            raise HTTPException(status_code=400, detail="User input cannot be empty")
+        if not report_text.strip():
+            logger.warning("No report text provided")
+            # Allow empty report_text for follow-up questions if context exists
 
-        # Parse the PDF using your parsing logic (with OCR fallback)
-        parsed_result = extract(tmp_path)
+        # Create input for LLM
+        final_input = f"Here is a patient's medical report:\n\n{report_text}\n\nPatient's medical history: {medical_history or 'Not provided'}\n\nPatient's query: {user_input}"
 
-        # Combine extracted page texts
-        report_text = "\n\n".join([page.text for page in parsed_result.pages])
-
-        # Create final input for LLM
-        final_input = f"Here is a patient's medical report:\n\n{report_text}\n\nPatient's query: {user_input}"
-
-        # Run LLM chain with memory
-        response = chat_chain.run(input=final_input)
+        # Run LLM chain
+        response = chat_chain.invoke({"input": final_input})
+        if isinstance(response, dict):
+            response = response.get("text", str(response))
+        logger.info("Successfully generated response from LLM")
 
         return JSONResponse({
             "status": "success",
@@ -37,12 +39,8 @@ async def chat_with_report(
         })
 
     except Exception as e:
+        logger.error(f"Error processing request: {str(e)}")
         return JSONResponse({
             "status": "error",
             "error": str(e)
         }, status_code=500)
-
-    finally:
-        # Clean up temp file
-        if os.path.exists(tmp_path):
-            os.remove(tmp_path)

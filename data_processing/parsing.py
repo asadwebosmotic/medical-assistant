@@ -29,11 +29,18 @@ def extract(filename: str) -> PdfExtractionResult:
             bbox_annotation_format=response_format_from_pydantic_model(Image),
             include_image_base64=False
         )
+
+        if not ocr_response or not ocr_response.pages:
+            logger.error(f"No data returned for page {page_num+1}")
+            return PageText(page_number=page_num+1, text="Error: Unable to process page", filename=filename or "unknown")
+        
         page_text = ocr_response.pages[0].markdown + "\n\n" + "\n\n".join(
             [f"Annotation for {image_data.id} : {image_data.image_annotation}" 
              for image_data in ocr_response.pages[0].images]
         )
-        print(f"Page {page_num+1} parsed")
+
+        logger.info(f"Page {page_num+1} parsed successfully")
+        
         return PageText(
             page_number=page_num+1,
             text=page_text,
