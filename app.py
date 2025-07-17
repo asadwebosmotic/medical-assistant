@@ -41,13 +41,13 @@ with st.sidebar:
 st.markdown("""
 <style>
     .report-style {
-        background-color: #f9f9f9;
+        background-color: transparent; /* 👈 Remove the white box */
         padding: 1.5rem;
         border-radius: 0.75rem;
-        border: 1px solid #ddd;
+        border-left: 4px solid #5eead4; /* Optional: Stylish accent */
         font-family: 'Segoe UI', sans-serif;
         white-space: pre-wrap;
-        color: #1f2937;
+        color: #f1f5f9; /* Light gray for dark background */
     }
     .stButton>button {
         background-color: #2563eb;
@@ -65,7 +65,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🧬 AI-Powered Medical Report Summarizer 🩺")
+st.title("🧬 Meddy - AI-Powered Medical Report Summarizer 🩺")
 st.markdown("Upload your medical report and get a friendly, accurate explanation you can actually understand.")
 
 # Initialize session state
@@ -80,7 +80,7 @@ if "medical_history" not in st.session_state:
 
 # File uploader and inputs
 uploaded_file = st.file_uploader("📄 Upload your medical report (PDF only):", type=["pdf"], accept_multiple_files=False)
-user_input = st.text_input("💬 Ask something about your report:", value="Explain this report.")
+user_input = st.text_input("💬 Ask something about your report:", value="Please explain this report.")
 st.session_state.medical_history = st.text_area("🩺 Provide your medical history (optional):", placeholder="E.g., I have diabetes and high blood pressure.")
 
 # Process uploaded file
