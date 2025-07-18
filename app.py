@@ -41,13 +41,14 @@ with st.sidebar:
 st.markdown("""
 <style>
     .report-style {
-        background-color: transparent; /* 👈 Remove the white box */
+        background-color: #1e293b; /* Dark background for report */
         padding: 1.5rem;
         border-radius: 0.75rem;
-        border-left: 4px solid #5eead4; /* Optional: Stylish accent */
+        border-left: 4px solid #5eead4; /* Stylish accent */
         font-family: 'Segoe UI', sans-serif;
-        white-space: pre-wrap;
-        color: #f1f5f9; /* Light gray for dark background */
+        color: #f1f5f9; /* Light gray text */
+        line-height: 1.6;
+        margin-bottom: 1rem;
     }
     .stButton>button {
         background-color: #2563eb;
@@ -62,11 +63,24 @@ st.markdown("""
         background-color: #1d4ed8;
         transform: scale(1.02);
     }
+    .section-header {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #5eead4;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    .sub-section {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #94a3b8;
+        margin-bottom: 0.5rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 st.title("🧬 Meddy - AI-Powered Medical Report Summarizer 🩺")
-st.markdown("Upload your medical report and get a friendly, accurate explanation you can actually understand.")
+st.markdown("Upload your medical report and get a clear, human-friendly explanation of your results.")
 
 # Initialize session state
 if "chat_memory" not in st.session_state:
@@ -149,22 +163,22 @@ if st.button("🔍 Analyze Report"):
                 logger.error(f"Failed to process report: {result.get('error')}")
 
 # Follow-up questions
-st.subheader("💬 Follow-Up Questions")
-follow_up_input = st.text_input("Ask a follow-up question:", key="follow_up")
-if st.button("Send Follow-Up"):
-    if not st.session_state.report_text:
-        st.warning("Please upload a PDF medical report first.")
-    elif not follow_up_input.strip():
-        st.warning("Please enter a follow-up question.")
-    else:
-        with st.spinner("Processing..."):
-            logger.info(f"Processing follow-up query: {follow_up_input}")
-            final_input = f"Here is a patient's medical report:\n\n{st.session_state.report_text}\n\nPatient's medical history: {st.session_state.medical_history or 'Not provided'}\n\nPatient's query: {follow_up_input}"
-            result = chat_with_api(st.session_state.report_text, final_input, st.session_state.medical_history)
-            if result.get("status") == "success":
-                st.markdown(f"<div class='report-style'>{result['response']}</div>", unsafe_allow_html=True)
-                st.session_state.chat_memory.save_context({"input": follow_up_input}, {"output": result["response"]})
-                logger.info("Successfully processed follow-up question")
-            else:
-                st.error(f"❌ Error: {result.get('error', 'Failed to process the follow-up question. Please try again or contact support.')}")
-                logger.error(f"Failed to process follow-up: {result.get('error')}")
+# st.subheader("💬 Follow-Up Questions")
+# follow_up_input = st.text_input("Ask a follow-up question:", key="follow_up")
+# if st.button("Send Follow-Up"):
+#     if not st.session_state.report_text:
+#         st.warning("Please upload a PDF medical report first.")
+#     elif not follow_up_input.strip():
+#         st.warning("Please enter a follow-up question.")
+#     else:
+#         with st.spinner("Processing..."):
+#             logger.info(f"Processing follow-up query: {follow_up_input}")
+#             final_input = f"Here is a patient's medical report:\n\n{st.session_state.report_text}\n\nPatient's medical history: {st.session_state.medical_history or 'Not provided'}\n\nPatient's query: {follow_up_input}"
+#             result = chat_with_api(st.session_state.report_text, final_input, st.session_state.medical_history)
+#             if result.get("status") == "success":
+#                 st.markdown(f"<div class='report-style'>{result['response']}</div>", unsafe_allow_html=True)
+#                 st.session_state.chat_memory.save_context({"input": follow_up_input}, {"output": result["response"]})
+#                 logger.info("Successfully processed follow-up question")
+#             else:
+#                 st.error(f"❌ Error: {result.get('error', 'Failed to process the follow-up question. Please try again or contact support.')}")
+#                 logger.error(f"Failed to process follow-up: {result.get('error')}")
