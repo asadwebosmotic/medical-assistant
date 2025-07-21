@@ -107,7 +107,7 @@ if uploaded_file:
         try:
             parsed_result = extract(tmp_path)
             st.session_state.report_text = "\n\n".join([page.text for page in parsed_result.pages])
-            logger.info("📄 OCR'd Report Text:\n", st.session_state.report_text)
+            logger.info("📄 OCR'd Report Text:\n%s", st.session_state.report_text)
             logger.info(f"Successfully parsed file: {uploaded_file.name}")
         finally:
             try:
