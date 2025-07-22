@@ -1,7 +1,11 @@
-from fastapi import FastAPI, Form, HTTPException
+from fastapi import FastAPI, Form, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
-from llm.llm_config import chat_chain
+from llm.llm_config import chat_chain, memory  # ✅ Import memory from llm_config.py
+from data_processing.parsing import extract
 import logging
+import shutil
+import tempfile
+import os
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -11,35 +15,76 @@ app = FastAPI()
 
 @app.post("/chat/")
 async def chat_with_report(
-    report_text: str = Form(""),
-    user_input: str = Form(...),
-    medical_history: str = Form(None)
+    file: UploadFile = File(...),
+    user_input: str = Form(default='Please explain this report.'),
+    medical_history: str = Form("")
 ):
     try:
-        # Validate inputs
         if not user_input.strip():
-            logger.error("User input is empty")
             raise HTTPException(status_code=400, detail="User input cannot be empty")
-        if not report_text.strip():
-            logger.warning("No report text provided")
-            # Allow empty report_text for follow-up questions if context exists
 
-        # Create input for LLM
-        final_input = f"Here is a patient's medical report:\n\n{report_text}\n\nPatient's medical history: {medical_history or 'Not provided'}\n\nPatient's query: {user_input}"
+        # Save file temporarily
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+            shutil.copyfileobj(file.file, tmp)
+            tmp_path = tmp.name
 
-        # Run LLM chain
+        # Extract report text
+        parsed_result = extract(tmp_path)
+        report_text = "\n\n".join([page.text for page in parsed_result.pages])
+        logger.info("Parsed text from uploaded PDF")
+
+        try:
+            os.remove(tmp_path)
+        except Exception as e:
+            logger.warning(f"Failed to delete temp file: {e}")
+
+        # Build LLM input
+        final_input = (
+            f"Here is a patient's medical report:\n\n{report_text}\n\n"
+            f"Patient's medical history: {medical_history or 'Not provided'}\n\n"
+            f"Patient's query: {user_input}"
+        )
+
+        # LLM call (memory handled inside chat_chain)
         response = chat_chain.invoke({"input": final_input})
-        if isinstance(response, dict):
-            response = response.get("text", str(response))
-        logger.info("Successfully generated response from LLM")
 
         return JSONResponse({
             "status": "success",
-            "response": response
+            "response": response.get("text", str(response))
         })
 
     except Exception as e:
-        logger.error(f"Error processing request: {str(e)}")
+        logger.error(f"Error processing chat: {e}")
+        return JSONResponse({
+            "status": "error",
+            "error": str(e)
+        }, status_code=500)
+
+@app.post("/followup/")
+async def followup_chat(
+    user_input: str = Form(...)
+):
+    try:
+        if not user_input.strip():
+            raise HTTPException(status_code=400, detail="Follow-up input cannot be empty")
+
+        # Inject system prompt-style user input
+        final_prompt = (
+            "You have already reviewed the patient's medical report and provided an interpretation. "
+            "Now the patient is asking a follow-up question based on those findings. "
+            "Be specific, refer to previously mentioned values like HbA1c or cholesterol, and personalize the answer if patient name is known.\n\n"
+            f"Follow-up question: {user_input}"
+        )
+
+        response = chat_chain.invoke({"input": final_prompt})
+
+        return JSONResponse({
+            "status": "success",
+            "response": response.get("text", str(response))
+        })
+
+    except Exception as e:
+        logger.error(f"Error in follow-up: {e}")
         return JSONResponse({
             "status": "error",
             "error": str(e)
