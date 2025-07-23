@@ -6,12 +6,21 @@ import logging
 import shutil
 import tempfile
 import os
+from fastapi.middleware.cors import CORSMiddleware
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/chat/")
 async def chat_with_report(
