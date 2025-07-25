@@ -79,10 +79,23 @@ async def followup_chat(
 
         # Inject system prompt-style user input
         final_prompt = (
-            "You have already reviewed the patient's medical report and provided an interpretation. "
-            "Now the patient is asking a follow-up question based on those findings. "
-            "Be specific, refer to previously mentioned values like HbA1c or cholesterol, and personalize the answer if patient name is known.\n\n"
-            f"Follow-up question: {user_input}"
+             "You have already analyzed and summarized the patient's medical report earlier. "
+            "Now the patient is asking a follow-up question related to that summary.\n\n"
+
+            "First, detect the intent behind the follow-up:\n"
+            "- If it's a greeting like 'hello', 'hi', or 'hey': respond briefly and kindly, no summary.\n"
+            "- If it's a goodbye like 'bye', 'see you', 'thanks': reply warmly and say you're here if they need anything.\n"
+            "- If it's a real question (like about cholesterol or vitamin D): respond specifically based on the earlier medical report summary.\n\n"
+
+            "📌 Important Rules:\n"
+            "- DO NOT repeat the full medical summary again.\n"
+            "- Keep your answers short, clear, and human. No essays.\n"
+            "- Use simple, everyday language — imagine you're explaining it to someone who isn't from a medical background.\n"
+            "- Refer to exact values if needed (e.g., 'your LDL was 119 mg/dL').\n"
+            "- Be warm, friendly, and professional.\n"
+            "- Personalize the answer if the patient's name is known.\n\n"
+
+            f"Follow-up question from the patient: {user_input}"
         )
 
         response = chat_chain.invoke({"input": final_prompt})

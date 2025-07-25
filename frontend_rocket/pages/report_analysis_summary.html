@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Analysis Summary - Meddy</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fmeddy6709back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.6"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 to-background">
+    <!-- Header Navigation -->
+    <header class="bg-surface/80 backdrop-blur-sm border-b border-surface-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-primary" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 4c1.105 0 2 .895 2 2s-.895 2-2 2-2-.895-2-2 .895-2 2-2zm4 18h-8v-2h2v-6h-2v-2h6v8h2v2z" fill="currentColor"/>
+                            <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h1 class="text-xl font-semibold text-text-primary">Meddy</h1>
+                        <p class="text-xs text-text-secondary">AI Medical Analysis</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="medical_report_upload.html" class="text-text-secondary hover:text-text-primary transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-surface-700">Upload</a>
+                    <a href="report_analysis_summary.html" class="text-primary font-medium px-3 py-2 rounded-lg bg-primary/10">Analysis</a>
+                    <a href="ai_medical_chat_interface.html" class="text-text-secondary hover:text-text-primary transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-surface-700">Chat</a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button type="button" class="text-text-secondary hover:text-text-primary p-2 rounded-lg hover:bg-surface-700 transition-colors duration-200" onclick="toggleMobileMenu()">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden hidden border-t border-surface-700 py-4">
+                <div class="space-y-2">
+                    <a href="medical_report_upload.html" class="block text-text-secondary hover:text-text-primary transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-surface-700">Upload</a>
+                    <a href="report_analysis_summary.html" class="block text-primary font-medium px-3 py-2 rounded-lg bg-primary/10">Analysis</a>
+                    <a href="ai_medical_chat_interface.html" class="block text-text-secondary hover:text-text-primary transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-surface-700">Chat</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Indicator -->
+    <div class="bg-surface/50 border-b border-surface-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                        <span class="text-text-primary font-medium">Analysis Complete</span>
+                    </div>
+                    <div class="hidden sm:block text-text-secondary text-sm">
+                        Report processed on July 23, 2025 at 11:48 AM
+                    </div>
+                </div>
+                <div class="text-text-secondary text-sm">
+                    Processing time: 2.3s
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
+                Your Medical Report Analysis
+            </h1>
+            <p class="text-lg text-text-secondary max-w-2xl mx-auto">
+                Here's a comprehensive breakdown of your medical report in easy-to-understand language.
+            </p>
+        </div>
+
+        <!-- Overall Summary Card -->
+        <div class="medical-card mb-8 bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+            <div class="flex items-start space-x-4">
+                <div class="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-xl font-semibold text-text-primary mb-3">Overall Health Assessment</h2>
+                    <p class="text-text-secondary leading-relaxed mb-4">
+                        Your blood work shows mostly normal results with a few areas that need attention. Your cholesterol levels are slightly elevated, which is common and manageable with lifestyle changes. Your kidney and liver function tests are excellent, indicating these organs are working well. Overall, this is a fairly typical report for someone your age, with just a couple of minor concerns to discuss with your doctor.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="status-success px-3 py-1 rounded-full text-sm font-medium">Kidney Function: Normal</span>
+                        <span class="status-success px-3 py-1 rounded-full text-sm font-medium">Liver Function: Normal</span>
+                        <span class="status-warning px-3 py-1 rounded-full text-sm font-medium">Cholesterol: Elevated</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medical Parameters Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Cholesterol Panel -->
+            <div class="medical-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-text-primary">Total Cholesterol</h3>
+                    <span class="status-warning px-2 py-1 rounded-lg text-xs font-medium">Elevated</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Your Value:</span>
+                        <span class="font-data text-lg font-semibold text-warning">245 mg/dL</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Normal Range:</span>
+                        <span class="font-data text-sm text-text-secondary">< 200 mg/dL</span>
+                    </div>
+                    <div class="pt-2 border-t border-surface-700">
+                        <p class="text-text-secondary text-sm leading-relaxed">
+                            Your cholesterol is moderately elevated. This increases your risk of heart disease, but it's very manageable with diet changes, exercise, and possibly medication if your doctor recommends it.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HDL Cholesterol -->
+            <div class="medical-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-text-primary">HDL (Good) Cholesterol</h3>
+                    <span class="status-normal px-2 py-1 rounded-lg text-xs font-medium">Normal</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Your Value:</span>
+                        <span class="font-data text-lg font-semibold text-accent">52 mg/dL</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Normal Range:</span>
+                        <span class="font-data text-sm text-text-secondary">> 40 mg/dL (men), > 50 mg/dL (women)</span>
+                    </div>
+                    <div class="pt-2 border-t border-surface-700">
+                        <p class="text-text-secondary text-sm leading-relaxed">
+                            Your "good" cholesterol is in a healthy range. HDL helps remove bad cholesterol from your arteries, so this is protective for your heart health.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LDL Cholesterol -->
+            <div class="medical-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-text-primary">LDL (Bad) Cholesterol</h3>
+                    <span class="status-error px-2 py-1 rounded-lg text-xs font-medium">High</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Your Value:</span>
+                        <span class="font-data text-lg font-semibold text-error">165 mg/dL</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Normal Range:</span>
+                        <span class="font-data text-sm text-text-secondary">< 100 mg/dL</span>
+                    </div>
+                    <div class="pt-2 border-t border-surface-700">
+                        <p class="text-text-secondary text-sm leading-relaxed">
+                            Your "bad" cholesterol is elevated. This is the type that can build up in your arteries. Your doctor may recommend lifestyle changes or medication to bring this down.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blood Glucose -->
+            <div class="medical-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-text-primary">Fasting Glucose</h3>
+                    <span class="status-normal px-2 py-1 rounded-lg text-xs font-medium">Normal</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Your Value:</span>
+                        <span class="font-data text-lg font-semibold text-accent">92 mg/dL</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Normal Range:</span>
+                        <span class="font-data text-sm text-text-secondary">70-99 mg/dL</span>
+                    </div>
+                    <div class="pt-2 border-t border-surface-700">
+                        <p class="text-text-secondary text-sm leading-relaxed">
+                            Your blood sugar level is perfectly normal. This indicates good glucose metabolism and low diabetes risk.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kidney Function -->
+            <div class="medical-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-text-primary">Creatinine</h3>
+                    <span class="status-normal px-2 py-1 rounded-lg text-xs font-medium">Normal</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Your Value:</span>
+                        <span class="font-data text-lg font-semibold text-accent">1.0 mg/dL</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Normal Range:</span>
+                        <span class="font-data text-sm text-text-secondary">0.7-1.3 mg/dL</span>
+                    </div>
+                    <div class="pt-2 border-t border-surface-700">
+                        <p class="text-text-secondary text-sm leading-relaxed">
+                            Your kidney function is excellent. Creatinine measures how well your kidneys filter waste from your blood, and yours are working perfectly.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liver Function -->
+            <div class="medical-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-text-primary">ALT (Liver Enzyme)</h3>
+                    <span class="status-normal px-2 py-1 rounded-lg text-xs font-medium">Normal</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Your Value:</span>
+                        <span class="font-data text-lg font-semibold text-accent">28 U/L</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-text-secondary">Normal Range:</span>
+                        <span class="font-data text-sm text-text-secondary">7-56 U/L</span>
+                    </div>
+                    <div class="pt-2 border-t border-surface-700">
+                        <p class="text-text-secondary text-sm leading-relaxed">
+                            Your liver function is normal. ALT is an enzyme that indicates liver health, and your levels show your liver is working well.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Critical Findings Section -->
+        <div class="medical-card mb-8 bg-error/5 border-error/20">
+            <div class="flex items-start space-x-4">
+                <div class="w-12 h-12 bg-error/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-xl font-semibold text-text-primary mb-3">Important Findings</h2>
+                    <div class="space-y-3">
+                        <div class="bg-error/10 border border-error/20 rounded-xl p-4">
+                            <h4 class="font-semibold text-error mb-2">Elevated Cholesterol Levels</h4>
+                            <p class="text-text-secondary text-sm leading-relaxed">
+                                Your total cholesterol (245 mg/dL) and LDL cholesterol (165 mg/dL) are both above recommended levels. This increases your cardiovascular risk but is very manageable with proper treatment.
+                            </p>
+                        </div>
+                        <div class="bg-warning/10 border border-warning/20 rounded-xl p-4">
+                            <h4 class="font-semibold text-warning mb-2">Recommended Actions</h4>
+                            <ul class="text-text-secondary text-sm space-y-1">
+                                <li>• Discuss cholesterol management with your doctor</li>
+                                <li>• Consider dietary changes (reduce saturated fats)</li>
+                                <li>• Increase physical activity if possible</li>
+                                <li>• Follow up in 3-6 months to monitor progress</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Insights -->
+        <div class="medical-card mb-8">
+            <h2 class="text-xl font-semibold text-text-primary mb-6">Key Insights</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-text-primary flex items-center">
+                        <svg class="w-5 h-5 text-success mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        What's Going Well
+                    </h3>
+                    <ul class="space-y-2 text-text-secondary text-sm">
+                        <li class="flex items-start">
+                            <span class="w-2 h-2 bg-success rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                            Your kidney function is excellent with normal creatinine levels
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-2 h-2 bg-success rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                            Liver enzymes are within normal range, indicating good liver health
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-2 h-2 bg-success rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                            Blood sugar levels are normal, showing good glucose control
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-2 h-2 bg-success rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                            HDL (good) cholesterol is at a protective level
+                        </li>
+                    </ul>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-text-primary flex items-center">
+                        <svg class="w-5 h-5 text-warning mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                    </svg>
+                    Areas for Attention
+                    </h3>
+                    <ul class="space-y-2 text-text-secondary text-sm">
+                        <li class="flex items-start">
+                            <span class="w-2 h-2 bg-warning rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                            Total cholesterol is elevated and should be monitored
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-2 h-2 bg-error rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                            LDL cholesterol is high and may require intervention
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-2 h-2 bg-warning rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                            Consider lifestyle modifications for heart health
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-2 h-2 bg-warning rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                            Schedule follow-up to track cholesterol management
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Activation Section -->
+        <div class="medical-card text-center bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+            <div class="max-w-2xl mx-auto">
+                <div class="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-semibold text-text-primary mb-4">
+                    Have Questions About Your Results?
+                </h2>
+                <p class="text-text-secondary mb-6 leading-relaxed">
+                    Our AI medical assistant is ready to answer any specific questions you have about your report. 
+                    Get personalized explanations and guidance based on your results.
+                </p>
+                <a href="ai_medical_chat_interface.html" class="medical-button-primary inline-flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    Start Chat for Questions
+                </a>
+                <p class="text-text-secondary text-sm mt-4">
+                    Available 24/7 • Instant responses • Personalized to your report
+                </p>
+            </div>
+        </div>
+
+        <!-- Additional Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <div class="medical-card text-center">
+                <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-text-primary mb-2">Download Report</h3>
+                <p class="text-text-secondary text-sm mb-4">Get a PDF copy of this analysis to share with your healthcare provider.</p>
+                <button class="medical-button-secondary text-sm" onclick="downloadReport()">
+                    Download PDF
+                </button>
+            </div>
+
+            <div class="medical-card text-center">
+                <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-text-primary mb-2">Upload Another Report</h3>
+                <p class="text-text-secondary text-sm mb-4">Analyze additional medical reports or compare with previous results.</p>
+                <a href="medical_report_upload.html" class="medical-button-secondary text-sm">
+                    Upload New Report
+                </a>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="mt-12 medical-card bg-warning/5 border-warning/20">
+            <div class="flex items-start space-x-3">
+                <svg class="w-6 h-6 text-warning flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                </svg>
+                <div>
+                    <h4 class="text-warning font-semibold mb-2">Medical Disclaimer</h4>
+                    <p class="text-text-secondary text-sm leading-relaxed">
+                        This AI analysis is for informational purposes only and should not replace professional medical advice. 
+                        Always consult with qualified healthcare providers for medical decisions and treatment plans. 
+                        The interpretations provided are based on general medical knowledge and may not account for your complete medical history.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-surface/50 border-t border-surface-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <p class="text-text-secondary text-sm">
+                    © 2025 Meddy. All Rights Reserved. | 
+                    <a href="javascript:void(0)" class="text-primary hover:text-primary-600 transition-colors duration-200">Privacy Policy</a> | 
+                    <a href="javascript:void(0)" class="text-primary hover:text-primary-600 transition-colors duration-200">Terms of Service</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Download report functionality
+        function downloadReport() {
+            // Simulate PDF download
+            const link = document.createElement('a');
+            link.href = '#'; // In real app, this would be the PDF URL
+            link.download = 'medical-report-analysis.pdf';
+            
+            // Show loading state
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = 'Generating PDF...';
+            button.disabled = true;
+            
+            // Simulate download delay
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.disabled = false;
+                
+                // Show success message
+                showNotification('Report downloaded successfully!', 'success');
+            }, 2000);
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-xl shadow-lg transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                notification.className += ' bg-success/10 border border-success/20 text-success';
+            } else if (type === 'error') {
+                notification.className += ' bg-error/10 border border-error/20 text-error';
+            } else {
+                notification.className += ' bg-primary/10 border border-primary/20 text-primary';
+            }
+            
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span class="font-medium">${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Smooth scroll to sections
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add fade-in animation to cards
+            const cards = document.querySelectorAll('.medical-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.3s ease-out';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

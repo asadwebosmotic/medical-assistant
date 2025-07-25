@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meddy - AI Medical Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .logo-text p {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-tab.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .nav-tab:not(.active) {
+            color: #94a3b8;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .upload-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .upload-subtitle {
+            color: #94a3b8;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(6, 182, 212, 0.3);
+            border-radius: 16px;
+            padding: 60px 20px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: rgba(6, 182, 212, 0.6);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: #06b6d4;
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: rgba(6, 182, 212, 0.2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #06b6d4;
+        }
+
+        .upload-text {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .browse-btn {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .browse-btn:hover {
+            background: rgba(30, 41, 59, 1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .uploaded-file {
+            display: none;
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .uploaded-file.show {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(6, 182, 212, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #06b6d4;
+        }
+
+        .file-info h4 {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .file-info p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .remove-file {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .remove-file:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #06b6d4;
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-help {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-loading {
+            display: none;
+        }
+
+        .analyze-btn.loading .btn-text {
+            opacity: 0;
+        }
+
+        .analyze-btn.loading .btn-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Analysis Section */
+        .analysis-section {
+            display: none;
+        }
+
+        .analysis-section.show {
+            display: block;
+        }
+
+        .analysis-header {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .success-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(34, 197, 94, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #22c55e;
+            font-size: 20px;
+        }
+
+        .analysis-info h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .analysis-meta {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .analysis-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .analysis-title h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .analysis-title p {
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .analysis-content {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .markdown-content {
+            line-height: 1.7;
+        }
+
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3,
+        .markdown-content h4 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .markdown-content h1 {
+            font-size: 28px;
+            color: #06b6d4;
+            border-bottom: 2px solid rgba(6, 182, 212, 0.3);
+            padding-bottom: 8px;
+        }
+
+        .markdown-content h2 {
+            font-size: 24px;
+            color: #3b82f6;
+        }
+
+        .markdown-content h3 {
+            font-size: 20px;
+            color: #8b5cf6;
+        }
+
+        .markdown-content h4 {
+            font-size: 18px;
+            color: #06b6d4;
+        }
+
+        .markdown-content p {
+            margin-bottom: 16px;
+            color: #e2e8f0;
+        }
+
+        .markdown-content ul,
+        .markdown-content ol {
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+
+        .markdown-content li {
+            margin-bottom: 8px;
+            color: #e2e8f0;
+        }
+
+        .markdown-content strong {
+            font-weight: 600;
+            color: white;
+        }
+
+        .markdown-content em {
+            font-style: italic;
+            color: #94a3b8;
+        }
+
+        .markdown-content code {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            color: #06b6d4;
+        }
+
+        .markdown-content blockquote {
+            border-left: 4px solid #06b6d4;
+            padding-left: 16px;
+            margin: 16px 0;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        .markdown-content th,
+        .markdown-content td {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            text-align: left;
+        }
+
+        .markdown-content th {
+            background: rgba(30, 41, 59, 0.8);
+            font-weight: 600;
+        }
+
+        /* Chat Section */
+        .chat-section {
+            display: none;
+        }
+
+        .chat-section.show {
+            display: block;
+        }
+
+        .chat-container {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .chat-info h4 {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .chat-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .message.ai .message-avatar {
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+        }
+
+        .message.user .message-avatar {
+            background: rgba(139, 92, 246, 0.8);
+        }
+
+        .message-content {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message.user .message-content {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .message-text {
+            line-height: 1.5;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            resize: none;
+            min-height: 44px;
+            max-height: 120px;
+            font-family: inherit;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #06b6d4;
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            border: none;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+            color: #fca5a5;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .upload-section {
+                padding: 30px 20px;
+            }
+
+            .analysis-content {
+                padding: 30px 20px;
+            }
+
+            .chat-container {
+                height: 500px;
+            }
+
+            .message {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">M</div>
+                <div class="logo-text">
+                    <h1>Meddy</h1>
+                    <p>AI Medical Analysis</p>
+                </div>
+            </div>
+            <nav class="nav-tabs">
+                <div class="nav-tab active" data-tab="upload">Upload</div>
+                <div class="nav-tab" data-tab="analysis">Analysis</div>
+                <div class="nav-tab" data-tab="chat">Chat</div>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section" id="upload-section">
+                <h2 class="upload-title">Upload Your Medical Report</h2>
+                <p class="upload-subtitle">Get instant AI-powered analysis of your medical reports in plain English</p>
+                
+                <form id="upload-form">
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-icon">📄</div>
+                        <div class="upload-text">Drop your PDF here or click to browse</div>
+                        <div class="upload-subtext">Maximum file size: 10MB</div>
+                        <button type="button" class="browse-btn" onclick="document.getElementById('file-input').click()">Browse Files</button>
+                        <input type="file" id="file-input" class="file-input" accept=".pdf,.doc,.docx" required>
+                        
+                        <div class="uploaded-file" id="uploaded-file">
+                            <div class="file-icon">📄</div>
+                            <div class="file-info">
+                                <h4 id="file-name">Document.pdf</h4>
+                                <p id="file-size">2.5 MB</p>
+                            </div>
+                            <button type="button" class="remove-file" onclick="removeFile()">✕</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="user-input">
+                            What would you like to know? <span class="required">*</span>
+                        </label>
+                        <input type="text" id="user-input" class="form-input" value="Please explain this report" required>
+                        <div class="form-help">You can edit this default question or ask something specific</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="medical-history">Medical History (Optional)</label>
+                        <textarea id="medical-history" class="form-textarea" placeholder="Share any relevant medical history, current medications, or symptoms that might help with the analysis..."></textarea>
+                        <div class="form-help">Additional context helps provide more personalized insights</div>
+                    </div>
+
+                    <button type="submit" class="analyze-btn" id="analyze-btn">
+                        <span class="btn-text">Analyze Report</span>
+                        <div class="btn-loading">
+                            <div class="spinner"></div>
+                            Analyzing...
+                        </div>
+                    </button>
+                </form>
+
+                <div class="error-message" id="error-message"></div>
+            </section>
+
+            <!-- Analysis Section -->
+            <section class="analysis-section" id="analysis-section">
+                <div class="analysis-header">
+                    <div class="success-icon">✓</div>
+                    <div class="analysis-info">
+                        <h3>Analysis Complete</h3>
+                        <div class="analysis-meta">Report processed on <span id="analysis-date"></span> at <span id="analysis-time"></span></div>
+                    </div>
+                    <div style="margin-left: auto; color: #94a3b8; font-size: 14px;">
+                        Processing time: <span id="processing-time">2.3s</span>
+                    </div>
+                </div>
+
+                <div class="analysis-title">
+                    <h2>Your Medical Report Analysis</h2>
+                    <p>Here's a comprehensive breakdown of your medical report in easy-to-understand language.</p>
+                </div>
+
+                <div class="analysis-content">
+                    <div class="markdown-content" id="analysis-result">
+                        <!-- Dynamic content will be inserted here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chat Section -->
+            <section class="chat-section" id="chat-section">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-avatar">🤖</div>
+                        <div class="chat-info">
+                            <h4>Medical AI Assistant</h4>
+                            <div class="chat-status">
+                                <div class="status-dot"></div>
+                                Online
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message ai">
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-content">
+                                <div class="message-text">Hello! I've analyzed your medical report. I can help explain your findings, answer questions about specific values, or discuss next steps. What would you like to know?</div>
+                                <div class="message-time" id="initial-time"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <textarea class="chat-input" id="chat-input" placeholder="Ask about your report..." rows="1"></textarea>
+                            <button class="send-btn" id="send-btn" onclick="sendMessage()">
+                                <span id="send-icon">➤</span>
+                                <div class="spinner" id="send-spinner" style="display: none;"></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        let uploadedFile = null;
+        let analysisStartTime = null;
+
+        // Tab Navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.dataset.tab;
+                switchTab(targetTab);
+            });
+        });
+
+        function switchTab(tabName) {
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            // Show/hide sections
+            document.querySelectorAll('.upload-section, .analysis-section, .chat-section').forEach(section => {
+                section.classList.remove('show');
+            });
+            document.getElementById(`${tabName}-section`).classList.add('show');
+        }
+
+        // File Upload Handling
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const uploadedFileDiv = document.getElementById('uploaded-file');
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                showError('Please select a PDF file.');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) { // 10MB
+                showError('File size must be less than 10MB.');
+                return;
+            }
+
+            uploadedFile = file;
+            document.getElementById('file-name').textContent = file.name;
+            document.getElementById('file-size').textContent = formatFileSize(file.size);
+            uploadedFileDiv.classList.add('show');
+            hideError();
+        }
+
+        function removeFile() {
+            uploadedFile = null;
+            fileInput.value = '';
+            uploadedFileDiv.classList.remove('show');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Form Submission
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!uploadedFile) {
+                showError('Please select a file to upload.');
+                return;
+            }
+
+            const userInput = document.getElementById('user-input').value.trim();
+            const medicalHistory = document.getElementById('medical-history').value.trim();
+
+            if (!userInput) {
+                showError('Please enter what you would like to know.');
+                return;
+            }
+
+            await analyzeReport(uploadedFile, userInput, medicalHistory);
+        });
+
+        async function analyzeReport(file, userInput, medicalHistory) {
+            const analyzeBtn = document.getElementById('analyze-btn');
+            analyzeBtn.classList.add('loading');
+            analyzeBtn.disabled = true;
+            hideError();
+            
+            analysisStartTime = Date.now();
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('user_input', userInput);
+                formData.append('medical_history', medicalHistory);
+
+                const response = await fetch('http://localhost:8000/chat/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    displayAnalysis(data.response);
+                    switchTab('analysis');
+                } else {
+                    throw new Error(data.error || 'Analysis failed');
+                }
+            } catch (error) {
+                console.error('Analysis error:', error);
+                showError('Failed to analyze report. Please check your connection and try again.');
+            } finally {
+                analyzeBtn.classList.remove('loading');
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        function displayAnalysis(analysisText) {
+            const processingTime = ((Date.now() - analysisStartTime) / 1000).toFixed(1);
+            const now = new Date();
+            
+            document.getElementById('analysis-date').textContent = now.toLocaleDateString();
+            document.getElementById('analysis-time').textContent = now.toLocaleTimeString();
+            document.getElementById('processing-time').textContent = `${processingTime}s`;
+            
+            // Convert markdown to HTML
+            const htmlContent = markdownToHtml(analysisText);
+            document.getElementById('analysis-result').innerHTML = htmlContent;
+            
+            // Initialize chat with current time
+            document.getElementById('initial-time').textContent = now.toLocaleTimeString();
+            
+            // Enable chat tab
+            document.querySelector('[data-tab="chat"]').style.opacity = '1';
+            document.querySelector('[data-tab="chat"]').style.pointerEvents = 'auto';
+        }
+
+        // Simple markdown to HTML converter
+        function markdownToHtml(markdown) {
+            let html = markdown;
+            
+            // Headers
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            
+            // Bold
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Italic
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Code
+            html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+            
+            // Lists
+            html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+            
+            // Line breaks
+            html = html.replace(/\n\n/g, '</p><p>');
+            html = '<p>' + html + '</p>';
+            
+            // Clean up empty paragraphs
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<p>(<h[1-6]>)/g, '$1');
+            html = html.replace(/(<\/h[1-6]>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<ul>)/g, '$1');
+            html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+            
+            return html;
+        }
+
+        // Chat Functionality
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const chatMessages = document.getElementById('chat-messages');
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        chatInput.addEventListener('input', () => {
+            // Auto-resize textarea
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+        });
+
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+
+            // Disable send button
+            sendBtn.disabled = true;
+            document.getElementById('send-icon').style.display = 'none';
+            document.getElementById('send-spinner').style.display = 'block';
+
+            try {
+                const formData = new FormData();
+                formData.append('user_input', message);
+
+                const response = await fetch('http://localhost:8000/followup/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    addMessage(data.response, 'ai');
+                } else {
+                    throw new Error(data.error || 'Failed to get response');
+                }
+            } catch (error) {
+                console.error('Chat error:', error);
+                addMessage('Sorry, I encountered an error. Please try again.', 'ai');
+            } finally {
+                sendBtn.disabled = false;
+                document.getElementById('send-icon').style.display = 'block';
+                document.getElementById('send-spinner').style.display = 'none';
+            }
+        }
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = sender === 'ai' ? '🤖' : 'You';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            
+            const messageText = document.createElement('div');
+            messageText.className = 'message-text';
+            messageText.innerHTML = sender === 'ai' ? markdownToHtml(text) : text;
+            
+            const messageTime = document.createElement('div');
+            messageTime.className = 'message-time';
+            messageTime.textContent = new Date().toLocaleTimeString();
+            
+            content.appendChild(messageText);
+            content.appendChild(messageTime);
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Error Handling
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+        }
+
+        function hideError() {
+            document.getElementById('error-message').classList.remove('show');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Disable analysis and chat tabs initially
+            document.querySelector('[data-tab="analysis"]').style.opacity = '0.5';
+            document.querySelector('[data-tab="analysis"]').style.pointerEvents = 'none';
+            document.querySelector('[data-tab="chat"]').style.opacity = '0.5';
+            document.querySelector('[data-tab="chat"]').style.pointerEvents = 'none';
+        });
+    </script>
+</body>
+</html>
