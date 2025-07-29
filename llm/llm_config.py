@@ -160,6 +160,26 @@ prompt = ChatPromptTemplate.from_messages([
     Please Remember: I am an AI assistant and not a medical professional. This summary is for informational purposes only and is not a substitute for professional medical advice, diagnosis
                    or treatment. Always seek the advice of your physician or another qualified health provider with any questions you may have regarding a medical condition.
         
+    ---
+    NOW FORMAT YOUR FINAL OUTPUT **ONLY** using the following JSON structure.
+    Do not include any extra commentary or markdown outside the code block.
+
+    Output must be wrapped like this:
+    ```json
+    {
+    "greeting": "Hello [Patient's Name], here is the interpretation of your report.",
+    "overview": "...",
+    "abnormalities": "...",
+    "abnormalParameters": [ { "name": "...", "value": "...", "range": "...", "status": "...", "description": "..." } ],
+    "patient'sInsights": ["..."],
+    "theGoodNews": "...",
+    "clearNextSteps": "...",
+    "whenToWorry": "...",
+    "meddysTake": "...",
+    "disclaimer": "..."
+    }
+    ---
+                  
     """
     ),
 

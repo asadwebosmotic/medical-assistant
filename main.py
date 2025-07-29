@@ -5,7 +5,7 @@ from data_processing.parsing import extract
 import logging
 import shutil
 import tempfile
-import os
+import os, re, json
 from fastapi.middleware.cors import CORSMiddleware
 
 # Setup logging
@@ -55,11 +55,21 @@ async def chat_with_report(
         )
 
         # LLM call (memory handled inside chat_chain)
-        response = chat_chain.invoke({"input": final_input})
+        raw_response = chat_chain.invoke({"input": final_input}).get("text", "")
+
+        # 🧹 Strip markdown triple-backticks and parse JSON
+        cleaned = re.sub(r"^```json|```$", "", raw_response.strip()).strip()
+
+        try:
+            structured = json.loads(cleaned)
+        except Exception as e:
+            logger.warning(f"Failed to parse LLM output as JSON: {e}")
+            structured = {"unstructured": raw_response}
 
         return JSONResponse({
             "status": "success",
-            "response": response.get("text", str(response))
+            # "response": raw_response,
+            "structured_data": structured
         })
 
     except Exception as e:
@@ -79,7 +89,7 @@ async def followup_chat(
 
         # Inject system prompt-style user input
         final_prompt = (
-             "You have already analyzed and summarized the patient's medical report earlier. "
+            "You have already analyzed and summarized the patient's medical report earlier. "
             "Now the patient is asking a follow-up question related to that summary.\n\n"
 
             "First, detect the intent behind the follow-up:\n"
