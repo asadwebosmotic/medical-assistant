@@ -1,0 +1,14 @@
+fastapi
+uvicorn  
+pydantic  
+pdfplumber  
+python-dotenv  
+langchain  
+langchain-community  
+python-multipart    
+pytesseract  
+pdf2image  
+pydantic_settings  
+rapidocr-onnxruntime  
+llama_parse
+langchain_google_genai
