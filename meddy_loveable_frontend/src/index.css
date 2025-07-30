@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* import '@fontsource/inter'; */
+
+/* Meddy Design System - Medical Report Analyzer */
+@layer base {
+  :root {
+    /* Dark Theme - Primary Background */
+    --background: 222 84% 5%;  /* Dark navy blue */
+    --background-gradient: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+    --foreground: 210 40% 98%;
+
+    /* Cards & Surface */
+    --card: 215 28% 17%;  /* Dark slate */
+    --card-foreground: 210 40% 98%;
+    --card-hover: 215 28% 20%;
+
+    /* Medical Theme Colors */
+    --medical-primary: 180 98% 44%;  /* Teal/Cyan for medical branding */
+    --medical-primary-foreground: 210 40% 98%;
+    --medical-accent: 180 80% 60%;
+    --medical-success: 120 45% 60%;  /* Green for positive results */
+    --medical-warning: 45 95% 65%;   /* Orange for attention */
+    --medical-danger: 0 75% 60%;     /* Red for abnormal */
+
+    /* Status Colors */
+    --status-normal: 120 45% 60%;
+    --status-elevated: 45 95% 65%;
+    --status-high: 0 75% 60%;
+    --status-low: 220 90% 70%;
+
+    /* Text Colors */
+    --text-primary: 210 40% 98%;
+    --text-secondary: 215 20% 65%;
+    --text-muted: 215 16% 47%;
+
+    /* Interactive Elements */
+    --button-primary: 180 98% 44%;
+    --button-primary-hover: 180 98% 38%;
+    --button-secondary: 215 28% 25%;
+    --button-secondary-hover: 215 28% 30%;
+
+    /* Borders & Inputs */
+    --border: 215 28% 25%;
+    --input: 215 28% 17%;
+    --input-border: 215 28% 30%;
+    --input-focus: 180 98% 44%;
+
+    /* Shadows & Effects */
+    --shadow-glow: 0 0 20px hsl(180 98% 44% / 0.15);
+    --shadow-card: 0 4px 6px -1px hsl(222 84% 5% / 0.5);
+    
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+    color: hsl(var(--text-primary));
+    min-height: 100vh;
+  }
+
+  /* Smooth animations */
+  * {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@layer components {
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--card));
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--medical-primary) / 0.5);
+  }
+
+  /* Glow effects */
+  .glow-effect {
+    filter: drop-shadow(var(--shadow-glow));
+  }
+
+  /* File upload dashed border */
+  .upload-border {
+    border: 2px dashed hsl(var(--medical-primary) / 0.4);
+    background: hsl(var(--card) / 0.5);
+  }
+
+  .upload-border:hover {
+    border-color: hsl(var(--medical-primary) / 0.6);
+    background: hsl(var(--card) / 0.7);
+  }
+
+  /* Status badges */
+  .status-normal {
+    background: hsl(var(--status-normal) / 0.1);
+    color: hsl(var(--status-normal));
+    border: 1px solid hsl(var(--status-normal) / 0.3);
+  }
+
+  .status-elevated {
+    background: hsl(var(--status-elevated) / 0.1);
+    color: hsl(var(--status-elevated));
+    border: 1px solid hsl(var(--status-elevated) / 0.3);
+  }
+
+  .status-high {
+    background: hsl(var(--status-high) / 0.1);
+    color: hsl(var(--status-high));
+    border: 1px solid hsl(var(--status-high) / 0.3);
+  }
+
+  .status-low {
+    background: hsl(var(--status-low) / 0.1);
+    color: hsl(var(--status-low));
+    border: 1px solid hsl(var(--status-low) / 0.3);
+  }
+
+  /* Chat bubbles */
+  .chat-user {
+    background: hsl(var(--medical-primary) / 0.1);
+    border: 1px solid hsl(var(--medical-primary) / 0.3);
+    color: hsl(var(--text-primary));
+  }
+
+  .chat-ai {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--text-primary));
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
