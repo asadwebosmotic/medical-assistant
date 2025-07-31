@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Send, Bot, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ChatMessage } from './MeddyApp';
+import ReactMarkdown from 'react-markdown';
 
 interface ChatInterfaceProps {
   analysisData: any;
@@ -231,7 +232,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ analysisData, messages, s
                     ? 'chat-user' 
                     : 'chat-ai'
                 }`}>
-                  <p className="text-text-primary whitespace-pre-wrap">{message.content}</p>
+                  <ReactMarkdown className="prose text-text-primary max-w-full">
+                    {message.content}
+                  </ReactMarkdown>
                 </div>
                 <div className="text-xs text-text-muted mt-1">
                   {formatTime(message.timestamp)}
