@@ -50,7 +50,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ analysisData, messages, s
       const formData = new FormData();
       formData.append('user_input', inputValue);
 
-      const response = await fetch(import.meta.env.VITE_FOLLOWUP_API_URL, {
+      const response = await fetch(`${import.meta.env.RENDER_BACKEND_URL}/followup/`, {
         method: 'POST',
         body: formData,
       });
