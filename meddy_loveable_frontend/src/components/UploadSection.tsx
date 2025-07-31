@@ -82,7 +82,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
     formData.append('medical_history', medicalHistory);
 
     try {
-      const response = await fetch(`${import.meta.env.RENDER_BACKEND_URL}/chat/`, {
+      const response = await fetch(`${import.meta.env.VITE_RENDER_BACKEND_URL}/chat/`, {
         method: 'POST',
         body: formData,
       });
