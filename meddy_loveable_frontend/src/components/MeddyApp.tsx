@@ -92,13 +92,8 @@ const MeddyApp = () => {
       <footer className="border-t border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center text-sm text-text-muted">
-            © 2025 Meddy. All Rights Reserved. |{' '}
-            <a href="#" className="text-medical-primary hover:underline">
-              Privacy Policy
-            </a>{' '}
-            |{' '}
-            <a href="#" className="text-medical-primary hover:underline">
-              Terms of Service
+            <a href="https://webosmotic.com/?referral=meddy_tool" target="_blank" rel="noopener noreferrer" className="footer-link">
+              @2025 WebOsmotic Private Limited. All Rights Reserved.
             </a>
           </div>
         </div>

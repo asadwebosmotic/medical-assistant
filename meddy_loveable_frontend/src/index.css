@@ -157,3 +157,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+.footer-link {
+  color: hsl(var(--medical-primary));
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-link:hover {
+  color: hsl(var(--medical-primary));
+  text-decoration: underline;
+}
