@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, AlertTriangle, TrendingUp, TrendingDown, MessageSquare } from 'lucide-react';
+import { CheckCircle, AlertTriangle, TrendingUp, TrendingDown, MessageSquare, Search } from 'lucide-react';
 
 interface AnalysisResultsProps {
   analysisData: any;
@@ -133,34 +133,43 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
 
         {/* Abnormal Parameters */}
         {analysisData.abnormalParameters && analysisData.abnormalParameters.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {analysisData.abnormalParameters.map((param: any, index: number) => (
-              <div key={index} className="bg-card rounded-2xl p-6 shadow-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-text-primary">{param.name}</h3>
-                  {getStatusIcon(param.status)}
-                </div>
-                
-                <div className="space-y-2 mb-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-text-muted">Your Value:</span>
-                    <span className="font-medium text-text-primary">{param.value}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-text-muted">Normal Range:</span>
-                    <span className="text-text-secondary">{param.range}</span>
-                  </div>
-                </div>
-                
-                <p className="text-sm text-text-secondary leading-relaxed">
-                  {param.description}
-                </p>
-                
-                <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-3 ${getStatusBadgeClass(param.status)}`}>
-                  {param.status === 'normal' ? 'Normal' : param.status}
-                </span>
+          <div className="bg-card rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-medical-primary/10 rounded-lg flex items-center justify-center">
+                <Search className="w-5 h-5 text-medical-primary" />
               </div>
-            ))}
+              <h2 className="text-xl font-semibold text-text-primary">Abnormal Parameters</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {analysisData.abnormalParameters.map((param: any, index: number) => (
+                <div key={index} className="bg-card-hover rounded-2xl p-6 shadow-md border border-border hover:border-medical-primary/30 hover:shadow-lg transition">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-text-primary">{param.name}</h3>
+                    {getStatusIcon(param.status)}
+                  </div>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-text-muted">Your Value:</span>
+                      <span className="font-medium text-text-primary">{param.value}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-text-muted">Normal Range:</span>
+                      <span className="text-text-secondary">{param.range}</span>
+                    </div>
+                  </div>
+                  
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    {param.description}
+                  </p>
+                  
+                  <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-3 ${getStatusBadgeClass(param.status)}`}>
+                    {param.status === 'normal' ? 'Normal' : param.status}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

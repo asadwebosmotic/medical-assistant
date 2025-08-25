@@ -232,9 +232,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ analysisData, messages, s
                     ? 'chat-user' 
                     : 'chat-ai'
                 }`}>
-                  <ReactMarkdown className="prose text-text-primary max-w-full">
-                    {message.content}
-                  </ReactMarkdown>
+                  <div className="prose text-text-primary max-w-full">
+                    <ReactMarkdown>
+                      {message.content}
+                    </ReactMarkdown>
+                  </div>
                 </div>
                 <div className="text-xs text-text-muted mt-1">
                   {formatTime(message.timestamp)}
