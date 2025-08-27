@@ -4,8 +4,9 @@ import Navigation from './Navigation';
 import UploadSection from './UploadSection';
 import AnalysisResults from './AnalysisResults';
 import ChatInterface from './ChatInterface';
+import CardioView from './CardioView';
 
-type ActiveTab = 'upload' | 'analysis' | 'chat';
+type ActiveTab = 'upload' | 'analysis' | 'chat' | 'cardio';
 
 // Move ChatMessage type here for sharing with ChatInterface
 export interface ChatMessage {
@@ -19,6 +20,8 @@ const MeddyApp = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('upload');
   const [analysisData, setAnalysisData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [cardioComplete, setCardioComplete] = useState(false);
+
   // Persist chat messages across tab switches
   const [messages, setMessages] = useState<ChatMessage[]>([{
     id: '1',
@@ -34,6 +37,43 @@ const MeddyApp = () => {
 
   const handleStartChat = () => {
     setActiveTab('chat');
+  };
+
+  const handleOpenCardio = async () => {
+    setIsLoading(true);
+    try {
+      console.log('Making request to:', `${import.meta.env.VITE_RENDER_BACKEND_URL}/cardio_view`);
+      
+      const response = await fetch(`${import.meta.env.VITE_RENDER_BACKEND_URL}/cardio_view`, { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error:', errorText);
+        throw new Error(`Failed to load cardio view: ${response.status}`);
+      }
+      
+      const json = await response.json();
+      console.log('Cardio response:', json);
+      
+      const cardioData = json?.structured_data || json;
+      setAnalysisData((prev: any) => ({ ...prev, cardio: cardioData }));
+      setCardioComplete(true);
+      setActiveTab('cardio');
+    } catch (error) {
+      console.error('Cardio view error:', error);
+      // Navigate to cardio; component will self-fetch
+      setAnalysisData((prev: any) => ({ ...prev, cardio: null }));
+      setActiveTab('cardio');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleTabChange = (tab: ActiveTab) => {
@@ -56,6 +96,7 @@ const MeddyApp = () => {
               activeTab={activeTab}
               onTabChange={handleTabChange}
               analysisComplete={!!analysisData}
+              cardioComplete={cardioComplete}
             />
           </div>
         </div>
@@ -76,6 +117,8 @@ const MeddyApp = () => {
             analysisData={analysisData}
             onStartChat={handleStartChat}
             onNewAnalysis={handleNewAnalysis}
+            onOpenCardio={handleOpenCardio}
+            isLoading={isLoading}
           />
         )}
         
@@ -85,6 +128,10 @@ const MeddyApp = () => {
             messages={messages}
             setMessages={setMessages}
           />
+        )}
+
+        {activeTab === 'cardio' && (
+          <CardioView initialData={analysisData?.cardio} loading={isLoading} />
         )}
       </main>
 

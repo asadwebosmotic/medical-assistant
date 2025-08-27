@@ -6,9 +6,11 @@ interface AnalysisResultsProps {
   analysisData: any;
   onStartChat: () => void;
   onNewAnalysis: () => void;
+  onOpenCardio?: () => void;
+  isLoading?: boolean;
 }
 
-const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStartChat, onNewAnalysis }) => {
+const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStartChat, onNewAnalysis, onOpenCardio, isLoading = false }) => {
   if (!analysisData) return null;
 
   const getStatusIcon = (status: string) => {
@@ -87,18 +89,32 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
                 Report processed on {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
               </span>
             </div>
-            <Button onClick={onNewAnalysis} variant="secondary" className="font-medium">
-              New Analysis
-            </Button>
+            <div className="flex gap-3">
+              <Button onClick={onOpenCardio} variant="medical" size="lg" className="font-medium px-6 py-3">
+                {isLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Processing...
+                  </>
+                ) : (
+                  'Cardio View'
+                )}
+              </Button>
+              <Button onClick={onNewAnalysis} variant="secondary" size="lg" className="font-medium px-6 py-3">
+                New Analysis
+              </Button>
+            </div>
           </div>
           
           <div className="bg-gradient-to-r from-medical-primary/10 to-medical-accent/10 rounded-2xl p-6 border border-medical-primary/20">
-            <h1 className="text-4xl font-bold text-text-primary mb-2">
-              Hello {getPatientName()},
-            </h1>
-            <p className="text-xl text-text-secondary">
-              Your medical report analysis is ready! Here's a comprehensive breakdown in easy-to-understand language.
-            </p>
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-text-primary mb-2">
+                Hello {getPatientName()},
+              </h1>
+              <p className="text-xl text-text-secondary">
+                Your medical report analysis is ready! Here's a comprehensive breakdown in easy-to-understand language.
+              </p>
+            </div>
           </div>
         </div>
 
