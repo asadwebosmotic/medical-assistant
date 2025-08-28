@@ -26,25 +26,77 @@ interface CardioViewProps {
 
 const renderMarkdownText = (text: string) => {
   if (!text) return null;
-  return text
-    .split('\n')
-    .map((line, index) => {
-      const boldRegex = /\*\*(.*?)\*\*/g;
-      const parts = line.split(boldRegex);
-      return (
-        <p key={index} className="mb-2">
-          {parts.map((part, partIndex) =>
-            partIndex % 2 === 1 ? (
-              <strong key={partIndex} className="font-semibold text-text-primary">
-                {part}
-              </strong>
-            ) : (
-              part
-            )
-          )}
-        </p>
+  
+  const lines = text.split('\n');
+  const elements: JSX.Element[] = [];
+  let currentList: string[] = [];
+  let keyCounter = 0;
+
+  const flushList = () => {
+    if (currentList.length > 0) {
+      elements.push(
+        <ul key={keyCounter++} className="list-disc list-inside mb-4 space-y-2">
+          {currentList.map((item, index) => {
+            const boldRegex = /\*\*(.*?)\*\*/g;
+            const parts = item.split(boldRegex);
+            return (
+              <li key={index} className="text-text-secondary leading-relaxed">
+                {parts.map((part, partIndex) => 
+                  partIndex % 2 === 1 ? (
+                    <strong key={partIndex} className="font-semibold text-text-primary">
+                      {part}
+                    </strong>
+                  ) : (
+                    part
+                  )
+                )}
+              </li>
+            );
+          })}
+        </ul>
       );
-    });
+      currentList = [];
+    }
+  };
+
+  lines.forEach((line) => {
+    const trimmedLine = line.trim();
+    
+    // Check if line starts with bullet point indicators
+    if (trimmedLine.match(/^[-•*]\s/) || trimmedLine.startsWith('•')) {
+      // Remove bullet point marker and add to current list
+      const listItem = trimmedLine.replace(/^[-•*]\s/, '').trim();
+      currentList.push(listItem);
+    } else {
+      // Flush any pending list
+      flushList();
+      
+      // Handle regular paragraph
+      if (trimmedLine) {
+        const boldRegex = /\*\*(.*?)\*\*/g;
+        const parts = trimmedLine.split(boldRegex);
+        
+        elements.push(
+          <p key={keyCounter++} className="mb-2 text-text-secondary leading-relaxed">
+            {parts.map((part, partIndex) => 
+              partIndex % 2 === 1 ? (
+                <strong key={partIndex} className="font-semibold text-text-primary">
+                  {part}
+                </strong>
+              ) : (
+                part
+              )
+            )}
+          </p>
+        );
+      }
+    }
+  });
+
+  // Flush any remaining list
+  flushList();
+
+  return elements;
 };
 
 const getStatusBadgeClass = (status: string) => {
@@ -221,7 +273,7 @@ const CardioView: React.FC<CardioViewProps> = ({ initialData, loading, patientNa
               <div className="bg-card rounded-2xl p-6 shadow-lg">
                 <div className="flex items-center gap-3 mb-4">
                   <CheckCircle className="w-6 h-6 text-medical-success" />
-                  <h2 className="text-xl font-semibold text-text-primary">What Looks Good</h2>
+                  <h2 className="text-xl font-semibold text-text-primary">What's Going Well</h2>
                 </div>
                 <div className="text-text-secondary leading-relaxed">
                   {renderMarkdownText(data.theGoodNews)}
@@ -232,7 +284,7 @@ const CardioView: React.FC<CardioViewProps> = ({ initialData, loading, patientNa
               <div className="bg-card rounded-2xl p-6 shadow-lg">
                 <div className="flex items-center gap-3 mb-4">
                   <AlertTriangle className="w-6 h-6 text-status-elevated" />
-                  <h2 className="text-xl font-semibold text-text-primary">Actions & Attention</h2>
+                  <h2 className="text-xl font-semibold text-text-primary">Areas for Attention</h2>
                 </div>
                 <div className="space-y-4 text-text-secondary leading-relaxed">
                   {data.clearNextSteps && (

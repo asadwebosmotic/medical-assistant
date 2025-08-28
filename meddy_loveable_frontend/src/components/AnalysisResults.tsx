@@ -45,28 +45,76 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
   const renderMarkdownText = (text: string) => {
     if (!text) return null;
     
-    // Simple markdown parsing for bold text and line breaks
-    return text
-      .split('\n')
-      .map((line, index) => {
-        // Handle bold text
-        const boldRegex = /\*\*(.*?)\*\*/g;
-        const parts = line.split(boldRegex);
-        
-        return (
-          <p key={index} className="mb-2">
-            {parts.map((part, partIndex) => 
-              partIndex % 2 === 1 ? (
-                <strong key={partIndex} className="font-semibold text-text-primary">
-                  {part}
-                </strong>
-              ) : (
-                part
-              )
-            )}
-          </p>
+    const lines = text.split('\n');
+    const elements: JSX.Element[] = [];
+    let currentList: string[] = [];
+    let keyCounter = 0;
+
+    const flushList = () => {
+      if (currentList.length > 0) {
+        elements.push(
+          <ul key={keyCounter++} className="list-disc list-inside mb-4 space-y-2">
+            {currentList.map((item, index) => {
+              const boldRegex = /\*\*(.*?)\*\*/g;
+              const parts = item.split(boldRegex);
+              return (
+                <li key={index} className="text-text-secondary leading-relaxed">
+                  {parts.map((part, partIndex) => 
+                    partIndex % 2 === 1 ? (
+                      <strong key={partIndex} className="font-semibold text-text-primary">
+                        {part}
+                      </strong>
+                    ) : (
+                      part
+                    )
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         );
-      });
+        currentList = [];
+      }
+    };
+
+    lines.forEach((line) => {
+      const trimmedLine = line.trim();
+      
+      // Check if line starts with bullet point indicators
+      if (trimmedLine.match(/^[-•*]\s/) || trimmedLine.startsWith('•')) {
+        // Remove bullet point marker and add to current list
+        const listItem = trimmedLine.replace(/^[-•*]\s/, '').trim();
+        currentList.push(listItem);
+      } else {
+        // Flush any pending list
+        flushList();
+        
+        // Handle regular paragraph
+        if (trimmedLine) {
+          const boldRegex = /\*\*(.*?)\*\*/g;
+          const parts = trimmedLine.split(boldRegex);
+          
+          elements.push(
+            <p key={keyCounter++} className="mb-2 text-text-secondary leading-relaxed">
+              {parts.map((part, partIndex) => 
+                partIndex % 2 === 1 ? (
+                  <strong key={partIndex} className="font-semibold text-text-primary">
+                    {part}
+                  </strong>
+                ) : (
+                  part
+                )
+              )}
+            </p>
+          );
+        }
+      }
+    });
+
+    // Flush any remaining list
+    flushList();
+
+    return elements;
   };
 
   // Extract patient name from analysis data
