@@ -3,7 +3,15 @@ import { CheckCircle, AlertTriangle, HeartPulse, TrendingUp, TrendingDown } from
 
 export interface CardioData {
   overview?: string;
-  abnormalParameters?: Array<{ name: string; value: string; range: string; status: string; description: string }>;
+  abnormalParameters?: Array<{ 
+    name: string; 
+    value: string; 
+    range: string; 
+    status: string; 
+    description: string; 
+    insight?: string;
+    patientInsight?: string;
+  }>;
   theGoodNews?: string;
   clearNextSteps?: string;
   whenToWorry?: string;
@@ -13,6 +21,7 @@ export interface CardioData {
 interface CardioViewProps {
   initialData?: CardioData | null;
   loading?: boolean;
+  patientName?: string;
 }
 
 const renderMarkdownText = (text: string) => {
@@ -67,13 +76,14 @@ const getStatusIcon = (status: string) => {
   }
 };
 
-const CardioView: React.FC<CardioViewProps> = ({ initialData, loading }) => {
+const CardioView: React.FC<CardioViewProps> = ({ initialData, loading, patientName }) => {
   const [data, setData] = useState<CardioData | null>(initialData ?? null);
   const [internalLoading, setInternalLoading] = useState(false);
   const effectiveLoading = loading ?? internalLoading;
 
   useEffect(() => {
     if (initialData !== undefined) {
+      console.log('CardioView: Received initial data:', initialData);
       setData(initialData);
       return; // parent controls data
     }
@@ -142,7 +152,9 @@ const CardioView: React.FC<CardioViewProps> = ({ initialData, loading }) => {
           <h1 className="text-3xl font-bold text-text-primary mb-2 flex items-center gap-3">
             <HeartPulse className="w-7 h-7 text-medical-primary" /> Cardio View
           </h1>
-          <p className="text-text-secondary">Focused insights on cardiac parameters derived from your report.</p>
+                      <p className="text-xl text-text-secondary">
+              Hello {patientName || "Patient"}, your cardiac analysis is ready! Here's a focused breakdown of your heart-related parameters.
+            </p>
         </div>
 
         {data.overview && (
@@ -185,6 +197,15 @@ const CardioView: React.FC<CardioViewProps> = ({ initialData, loading }) => {
                     </div>
                   </div>
                   <p className="text-sm text-text-secondary leading-relaxed">{param.description}</p>
+                  {/* Patient's Insight */}
+                  {(param.insight || param.patientInsight) && (
+                    <div className="mt-3 p-3 bg-medical-primary/5 rounded-lg border border-medical-primary/20">
+                      <p className="text-sm text-text-secondary leading-relaxed">
+                        <strong className="font-semibold text-text-primary">Patient's Insight:</strong> {param.insight || param.patientInsight}
+                      </p>
+                    </div>
+                  )}
+                  
                   <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-3 ${getStatusBadgeClass(param.status)}`}>
                     {param.status === 'normal' ? 'Normal' : param.status}
                   </span>
@@ -240,6 +261,21 @@ const CardioView: React.FC<CardioViewProps> = ({ initialData, loading }) => {
             </div>
           </div>
         )}
+
+        {/* Medical Disclaimer - same as Analysis UI */}
+        <div className="bg-medical-warning/5 border border-medical-warning/20 rounded-2xl p-6">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-medical-warning mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="font-semibold text-medical-warning mb-2">Medical Disclaimer</h3>
+              <div className="text-text-secondary leading-relaxed font-semibold">
+                This AI analysis is for informational purposes only and should not replace professional medical advice. 
+                Always consult with qualified healthcare providers for medical decisions and treatment plans. 
+                The interpretations provided are based on general medical knowledge and may not account for your complete medical history.
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -22,6 +22,13 @@ const MeddyApp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cardioComplete, setCardioComplete] = useState(false);
 
+  // Extract patient name from analysis data
+  const getPatientName = () => {
+    const greeting = analysisData?.greeting || "";
+    const match = greeting.match(/Hello\s+(Mr\.|Ms\.|Mrs\.)?\s*([A-Za-z\s]+),/i);
+    return match ? match[0].replace('Hello ', '').replace(',', '') : "Patient";
+  };
+
   // Persist chat messages across tab switches
   const [messages, setMessages] = useState<ChatMessage[]>([{
     id: '1',
@@ -131,7 +138,11 @@ const MeddyApp = () => {
         )}
 
         {activeTab === 'cardio' && (
-          <CardioView initialData={analysisData?.cardio} loading={isLoading} />
+          <CardioView 
+            initialData={analysisData?.cardio} 
+            loading={isLoading} 
+            patientName={getPatientName()}
+          />
         )}
       </main>
 

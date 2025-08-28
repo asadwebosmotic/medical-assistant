@@ -90,19 +90,21 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
               </span>
             </div>
             <div className="flex gap-3">
-              <Button onClick={onOpenCardio} variant="medical" size="lg" className="font-medium px-6 py-3">
-                {isLoading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                    Processing...
-                  </>
-                ) : (
-                  'Cardio View'
-                )}
-              </Button>
-              <Button onClick={onNewAnalysis} variant="secondary" size="lg" className="font-medium px-6 py-3">
+              <Button onClick={onNewAnalysis} variant="secondary" className="font-medium px-4 py-2">
                 New Analysis
               </Button>
+              {onOpenCardio && (
+                <Button onClick={onOpenCardio} variant="medical" className="font-medium px-4 py-2">
+                  {isLoading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      Processing...
+                    </>
+                  ) : (
+                    'Cardio View'
+                  )}
+                </Button>
+              )}
             </div>
           </div>
           
