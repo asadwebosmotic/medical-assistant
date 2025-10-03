@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import MeddyLogo from './MeddyLogo';
 import Navigation from './Navigation';
 import UploadSection from './UploadSection';
+import ImagingUploadSection from './ImagingUploadSection';
 import AnalysisResults from './AnalysisResults';
 import ChatInterface from './ChatInterface';
 import CardioView from './CardioView';
 
-type ActiveTab = 'upload' | 'analysis' | 'chat' | 'cardio';
+type ActiveTab = 'upload' | 'imaging' | 'analysis' | 'chat' | 'cardio';
 
 // Move ChatMessage type here for sharing with ChatInterface
 export interface ChatMessage {
@@ -118,6 +119,13 @@ const MeddyApp = () => {
             setIsLoading={setIsLoading}
           />
         )}
+        {activeTab === 'imaging' && (
+          <ImagingUploadSection
+            onAnalysisComplete={handleAnalysisComplete}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+          />
+        )}
         
         {activeTab === 'analysis' && analysisData && (
           <AnalysisResults
@@ -138,10 +146,10 @@ const MeddyApp = () => {
         )}
 
         {activeTab === 'cardio' && (
-          <CardioView 
-            initialData={analysisData?.cardio} 
-            loading={isLoading} 
-            patientName={getPatientName()}
+          <CardioView
+          initialData={analysisData?.cardio}
+          loading={isLoading}
+          patientName={getPatientName()}
           />
         )}
       </main>

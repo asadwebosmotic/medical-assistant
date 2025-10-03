@@ -2,8 +2,8 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface NavigationProps {
-  activeTab: 'upload' | 'analysis' | 'chat' | 'cardio';
-  onTabChange: (tab: 'upload' | 'analysis' | 'chat' | 'cardio') => void;
+  activeTab: 'upload' | 'imaging' | 'analysis' | 'chat' | 'cardio';
+  onTabChange: (tab: 'upload' | 'imaging' | 'analysis' | 'chat' | 'cardio') => void;
   analysisComplete: boolean;
   cardioComplete: boolean;
 }
@@ -11,6 +11,7 @@ interface NavigationProps {
 const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, analysisComplete, cardioComplete }) => {
   const tabs = [
     { id: 'upload', label: 'Upload', enabled: true },
+    { id: 'imaging', label: 'Imaging', enabled: true },
     { id: 'analysis', label: 'Analysis', enabled: analysisComplete },
     { id: 'chat', label: 'Chat', enabled: analysisComplete },
     { id: 'cardio', label: 'Cardio', enabled: cardioComplete },
