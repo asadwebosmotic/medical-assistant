@@ -2,6 +2,10 @@ import React, { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Upload, ImageIcon, FileImage, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Card } from '@/components/ui/card';
+import { CheckCircle } from 'lucide-react';
+import { Activity } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 interface ImagingUploadSectionProps {
   onAnalysisComplete: (data: any) => void;
@@ -19,7 +23,7 @@ const ImagingUploadSection: React.FC<ImagingUploadSectionProps> = ({
   setIsLoading,
 }) => {
   const [files, setFiles] = useState<File[]>([]);
-  const [userQuery, setUserQuery] = useState('Please explain this.');
+  const [userQuery, setUserQuery] = useState('Please explain this report.');
   const [medicalHistory, setMedicalHistory] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const { toast } = useToast();
@@ -94,7 +98,7 @@ const ImagingUploadSection: React.FC<ImagingUploadSectionProps> = ({
     formData.append('medical_history', medicalHistory);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_IMAGING_API_URL}`, {
+      const response = await fetch(`${import.meta.env.VITE_RENDER_BACKEND_URL}`, {
         method: 'POST',
         body: formData,
       });
@@ -120,7 +124,7 @@ const ImagingUploadSection: React.FC<ImagingUploadSectionProps> = ({
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-text-primary">Upload Your Medical Images</h1>
           <p className="text-lg text-text-secondary">
-            Upload up to 5 files (JPG, PNG, DICOM). Maximum combined size 100MB.
+          Get instant AI-powered analysis of your medical imaging reports. Upload up to 5 files (JPG, PNG, DICOM) and receive comprehensive explanations in plain English. Maximum combined size 100MB.
           </p>
         </div>
 
@@ -183,7 +187,7 @@ const ImagingUploadSection: React.FC<ImagingUploadSectionProps> = ({
               value={userQuery}
               onChange={(e) => setUserQuery(e.target.value)}
               className="w-full px-4 py-3 bg-input rounded-xl border border-input-border focus:border-input-focus focus:ring-2 focus:ring-medical-primary/20 text-text-primary placeholder-text-muted"
-              placeholder="Please explain this."
+              placeholder="Please explain this report."
             />
             <p className="text-xs text-text-muted">You can edit this default question or ask something specific</p>
           </div>
@@ -196,8 +200,11 @@ const ImagingUploadSection: React.FC<ImagingUploadSectionProps> = ({
               onChange={(e) => setMedicalHistory(e.target.value)}
               rows={4}
               className="w-full px-4 py-3 bg-input rounded-xl border border-input-border focus:border-input-focus focus:ring-2 focus:ring-medical-primary/20 text-text-primary placeholder-text-muted resize-none"
-              placeholder="Share relevant medical history, medications, or symptoms..."
+              placeholder="Share any relevant medical history, current medications, or symptoms that might help with the analysis..."
             />
+            <p className="text-xs text-text-muted">
+            Additional context helps provide more personalized insights
+            </p>
           </div>
 
           <Button onClick={handleAnalyze} disabled={files.length === 0 || isLoading} className="w-full" variant="medical" size="lg">
@@ -210,6 +217,39 @@ const ImagingUploadSection: React.FC<ImagingUploadSectionProps> = ({
               'Analyze Images'
             )}
           </Button>
+        </div>
+
+        {/* Features */}
+        <div className="grid md:grid-cols-3 gap-6 mt-8">
+          <Card className="p-6 bg-card border-border text-center">
+            <div className="w-12 h-12 bg-medical-normal/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-6 h-6 text-medical-normal" />
+            </div>
+            <h3 className="font-semibold mb-2">Secure & Private</h3>
+            <p className="text-sm text-muted-foreground">
+              Your medical data is encrypted and processed securely with HIPAA compliance.
+            </p>
+          </Card>
+
+          <Card className="p-6 bg-card border-border text-center">
+            <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Activity className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="font-semibold mb-2">Instant Analysis</h3>
+            <p className="text-sm text-muted-foreground">
+              Get comprehensive medical report explanations in seconds, not hours.
+            </p>
+          </Card>
+
+          <Card className="p-6 bg-card border-border text-center">
+            <div className="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <MessageCircle className="w-6 h-6 text-accent" />
+            </div>
+            <h3 className="font-semibold mb-2">Ask Questions</h3>
+            <p className="text-sm text-muted-foreground">
+              Follow up with questions about your results through our AI chat assistant.
+            </p>
+          </Card>
         </div>
       </div>
     </div>
