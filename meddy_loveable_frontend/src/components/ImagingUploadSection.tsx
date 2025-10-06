@@ -106,9 +106,16 @@ const ImagingUploadSection: React.FC<ImagingUploadSectionProps> = ({
       if (!response.ok) throw new Error(`Imaging analysis failed: ${response.status}`);
       const data = await response.json();
 
-      // backend returns { status, llm_output, thumbnails, ... }
-      const result = data?.llm_output || data;
-      onAnalysisComplete(result);
+      // backend returns { status, llm_output, thumbnails, file_types, num_files }
+      const llm = data?.llm_output || {};
+      const payload = {
+        ...llm,
+        thumbnails: data?.thumbnails || [],
+        file_types: data?.file_types || [],
+        num_files: data?.num_files || 0,
+        source: 'imaging',
+      };
+      onAnalysisComplete(payload);
       toast({ title: 'Imaging Analysis Complete', description: 'Your images were analyzed successfully.' });
     } catch (err) {
       console.error(err);

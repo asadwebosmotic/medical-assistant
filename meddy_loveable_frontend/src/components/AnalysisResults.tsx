@@ -155,7 +155,6 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
               )}
             </div>
           </div>
-          
           <div className="bg-gradient-to-r from-medical-primary/10 to-medical-accent/10 rounded-2xl p-6 border border-medical-primary/20">
             <div className="text-center">
               <h1 className="text-4xl font-bold text-text-primary mb-2">
@@ -180,33 +179,47 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
             <div className="text-text-secondary leading-relaxed">
               {renderMarkdownText(analysisData.overview)}
             </div>
-            
-            {/* Status badges for key findings */}
-            {analysisData.abnormalParameters && (
-              <div className="flex flex-wrap gap-2 mt-4">
-                {analysisData.abnormalParameters.slice(0, 3).map((param: any, index: number) => (
-                  <span
-                    key={index}
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(param.status)}`}
-                  >
-                    {param.name}: {param.status === 'normal' ? 'Normal' : param.status}
-                  </span>
-                ))}
-              </div>
-            )}
           </div>
         )}
 
-        {/* Abnormal Parameters */}
-        {analysisData.abnormalParameters && analysisData.abnormalParameters.length > 0 && (
+        {/* Uploaded Imaging (if present) – only for imaging source */}
+        {analysisData?.source === 'imaging' && Array.isArray(analysisData.thumbnails) && analysisData.thumbnails.length > 0 && (
           <div className="bg-card rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-text-primary">Uploaded Images</h2>
+              <span className="text-sm text-text-muted">
+                {(analysisData.num_files ?? analysisData.thumbnails.length)} file(s)
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {analysisData.thumbnails.map((b64: string, idx: number) => (
+                <div key={idx} className="relative overflow-hidden rounded-xl border border-border bg-card-hover">
+                  <img
+                    src={`data:image/png;base64,${b64}`}
+                    alt={`Imaging thumbnail ${idx + 1}`}
+                    className="w-full h-56 object-contain bg-black/5"
+                    loading="lazy"
+                  />
+                  {analysisData.file_types?.[idx] && (
+                    <span className="absolute top-2 left-2 text-xxs px-2 py-0.5 rounded-full bg-background/80 border border-border">
+                      {analysisData.file_types[idx]}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Abnormal Parameters – hide for imaging source */}
+        {analysisData?.source !== 'imaging' && analysisData.abnormalParameters && analysisData.abnormalParameters.length > 0 && (
+          <div className="bg-card rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-medical-primary/10 rounded-lg flex items-center justify-center">
-                <Search className="w-5 h-5 text-medical-primary" />
+                <AlertTriangle className="w-5 h-5 text-medical-warning" />
               </div>
               <h2 className="text-xl font-semibold text-text-primary">Abnormal Parameters</h2>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {analysisData.abnormalParameters.map((param: any, index: number) => (
                 <div key={index} className="bg-card-hover rounded-2xl p-6 shadow-md border border-border hover:border-medical-primary/30 hover:shadow-lg transition">
@@ -296,9 +309,11 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
             <div>
               <h3 className="font-semibold text-medical-warning mb-2">Medical Disclaimer</h3>
               <div className="text-text-secondary leading-relaxed font-semibold">
-                This AI analysis is for informational purposes only and should not replace professional medical advice. 
-                Always consult with qualified healthcare providers for medical decisions and treatment plans. 
-                The interpretations provided are based on general medical knowledge and may not account for your complete medical history.
+                This AI-generated analysis is for informational purposes only and may contain inaccuracies.
+                It should not be considered a substitute for professional medical advice, diagnosis, or treatment 
+                Always consult a qualified healthcare provider for medical decisions and treatment plans. 
+                The interpretations provided are based on general medical knowledge and image data alone,
+                and may not reflect your full medical history, clinical findings, or context.
               </div>
             </div>
           </div>
