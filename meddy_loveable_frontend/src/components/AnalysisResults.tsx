@@ -42,8 +42,19 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
     }
   };
 
-  const renderMarkdownText = (text: string) => {
-    if (!text) return null;
+  const renderMarkdownText = (text: any) => {
+  if (text == null) return null;
+  if (Array.isArray(text)) {
+    // If API sometimes returns a list of lines or bullet points
+    text = text.join('\n');
+  } else if (typeof text !== 'string') {
+    // Last-resort coercion to readable string
+    try {
+      text = JSON.stringify(text);
+    } catch {
+      text = String(text);
+    }
+  }
     
     const lines = text.split('\n');
     const elements: JSX.Element[] = [];
