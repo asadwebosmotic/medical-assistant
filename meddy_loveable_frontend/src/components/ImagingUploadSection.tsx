@@ -98,7 +98,7 @@ const ImagingUploadSection: React.FC<ImagingUploadSectionProps> = ({
     formData.append('medical_history', medicalHistory);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_IMAGING_API_URL}`, {
+      const response = await fetch(`${import.meta.env.VITE_RENDER_BACKEND_URL}/imaging/`, {
         method: 'POST',
         body: formData,
       });
