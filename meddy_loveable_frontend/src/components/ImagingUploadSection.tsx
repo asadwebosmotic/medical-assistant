@@ -23,7 +23,7 @@ const ImagingUploadSection: React.FC<ImagingUploadSectionProps> = ({
   setIsLoading,
 }) => {
   const [files, setFiles] = useState<File[]>([]);
-  const [userQuery, setUserQuery] = useState('Please explain this report.');
+  const [userQuery, setUserQuery] = useState('Analyze this medical imaging films.');
   const [medicalHistory, setMedicalHistory] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const { toast } = useToast();
@@ -98,7 +98,7 @@ const ImagingUploadSection: React.FC<ImagingUploadSectionProps> = ({
     formData.append('medical_history', medicalHistory);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_RENDER_BACKEND_URL}/imaging/`, {
+      const response = await fetch(`${import.meta.env.VITE_RENDER_BACKEND_URL}/imaging`, {
         method: 'POST',
         body: formData,
       });

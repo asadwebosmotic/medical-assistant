@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, AlertTriangle, TrendingUp, TrendingDown, MessageSquare, Search } from 'lucide-react';
+import { CheckCircle, AlertTriangle, TrendingUp, TrendingDown, MessageSquare, Search, CircleAlert, CircleHelp } from 'lucide-react';
 
 interface AnalysisResultsProps {
   analysisData: any;
@@ -128,6 +128,15 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
     return elements;
   };
 
+  // Determine if this is an imaging analysis
+  const isImaging = analysisData?.source === 'imaging';
+
+  // Normalize Patient's Insights across key variants and types
+  const rawInsights = analysisData?.patientsInsights ?? analysisData?.["patient'sInsights"];
+  const patientsInsightsText = Array.isArray(rawInsights)
+    ? rawInsights.map((s: any) => (typeof s === 'string' ? `- ${s}` : `- ${String(s)}`)).join('\n')
+    : (rawInsights ?? '');
+
   // Extract patient name from analysis data
   const getPatientName = () => {
     const greeting = analysisData?.greeting || "";
@@ -178,14 +187,14 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
           </div>
         </div>
 
-        {/* Overall Health Assessment */}
+        {/* Overall Health Assessment (renamed to Radiology Findings for imaging) */}
         {analysisData.overview && (
           <div className="bg-card rounded-2xl p-6 shadow-lg">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-medical-primary/10 rounded-lg flex items-center justify-center">
                 <CheckCircle className="w-5 h-5 text-medical-primary" />
               </div>
-              <h2 className="text-xl font-semibold text-text-primary">Overall Health Assessment</h2>
+              <h2 className="text-xl font-semibold text-text-primary">{isImaging ? 'Radiology Findings' : 'Overall Health Assessment'}</h2>
             </div>
             <div className="text-text-secondary leading-relaxed">
               {renderMarkdownText(analysisData.overview)}
@@ -194,7 +203,7 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
         )}
 
         {/* Uploaded Imaging (if present) – only for imaging source */}
-        {analysisData?.source === 'imaging' && Array.isArray(analysisData.thumbnails) && analysisData.thumbnails.length > 0 && (
+        {isImaging && Array.isArray(analysisData.thumbnails) && analysisData.thumbnails.length > 0 && (
           <div className="bg-card rounded-2xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-text-primary">Uploaded Images</h2>
@@ -222,8 +231,38 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
           </div>
         )}
 
+        {/* Abnormalities – imaging only */}
+        {isImaging && analysisData.abnormalities && (
+          <div className="bg-card rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-medical-primary/10 rounded-lg flex items-center justify-center">
+                <CircleAlert className="w-5 h-5 text-medical-primary" />
+              </div>
+              <h2 className="text-xl font-semibold text-text-primary">Abnormalities</h2>
+            </div>
+            <div className="text-text-secondary leading-relaxed">
+              {renderMarkdownText(analysisData.abnormalities)}
+            </div>
+          </div>
+        )}
+
+        {/* Patient's Insights – imaging only */}
+        {isImaging && patientsInsightsText && (
+          <div className="bg-card rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-medical-primary/10 rounded-lg flex items-center justify-center">
+                <CircleHelp className="w-5 h-5 text-medical-primary" />
+              </div>
+              <h2 className="text-xl font-semibold text-text-primary">Patient's Insights</h2>
+            </div>
+            <div className="text-text-secondary leading-relaxed">
+              {renderMarkdownText(patientsInsightsText)}
+            </div>
+          </div>
+        )}
+
         {/* Abnormal Parameters – hide for imaging source */}
-        {analysisData?.source !== 'imaging' && analysisData.abnormalParameters && analysisData.abnormalParameters.length > 0 && (
+        {!isImaging && analysisData.abnormalParameters && analysisData.abnormalParameters.length > 0 && (
           <div className="bg-card rounded-2xl p-6 shadow-lg">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-medical-primary/10 rounded-lg flex items-center justify-center">
@@ -263,45 +302,60 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
           </div>
         )}
 
-        {/* Key Insights */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* What's Going Well */}
-          {analysisData.theGoodNews && (
-            <div className="bg-card rounded-2xl p-6 shadow-lg">
-              <div className="flex items-center gap-3 mb-4">
-                <CheckCircle className="w-6 h-6 text-medical-success" />
-                <h2 className="text-xl font-semibold text-text-primary">What's Going Well</h2>
-              </div>
-              <div className="text-text-secondary leading-relaxed">
-                {renderMarkdownText(analysisData.theGoodNews)}
-              </div>
-            </div>
-          )}
-
-          {/* Areas for Attention */}
-          {(analysisData.clearNextSteps || analysisData.whenToWorry) && (
+        {/* Key Insights: imaging vs PDF layouts */}
+        {isImaging ? (
+          // Imaging: Only "When to Seek Medical Attention" card
+          (analysisData.whenToWorry) && (
             <div className="bg-card rounded-2xl p-6 shadow-lg">
               <div className="flex items-center gap-3 mb-4">
                 <AlertTriangle className="w-6 h-6 text-status-elevated" />
-                <h2 className="text-xl font-semibold text-text-primary">Areas for Attention</h2>
+                <h2 className="text-xl font-semibold text-text-primary">When to Seek Medical Attention</h2>
               </div>
-              <div className="space-y-4 text-text-secondary leading-relaxed">
-                {analysisData.clearNextSteps && (
-                  <div>
-                    <h4 className="font-medium text-text-primary mb-2">Recommended Actions</h4>
-                    {renderMarkdownText(analysisData.clearNextSteps)}
-                  </div>
-                )}
-                {analysisData.whenToWorry && (
-                  <div>
-                    <h4 className="font-medium text-text-primary mb-2">When to Seek Medical Attention</h4>
-                    {renderMarkdownText(analysisData.whenToWorry)}
-                  </div>
-                )}
+              <div className="text-text-secondary leading-relaxed">
+                {renderMarkdownText(analysisData.whenToWorry)}
               </div>
             </div>
-          )}
-        </div>
+          )
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* What's Going Well */}
+            {analysisData.theGoodNews && (
+              <div className="bg-card rounded-2xl p-6 shadow-lg">
+                <div className="flex items-center gap-3 mb-4">
+                  <CheckCircle className="w-6 h-6 text-medical-success" />
+                  <h2 className="text-xl font-semibold text-text-primary">What's Going Well</h2>
+                </div>
+                <div className="text-text-secondary leading-relaxed">
+                  {renderMarkdownText(analysisData.theGoodNews)}
+                </div>
+              </div>
+            )}
+
+            {/* Areas for Attention */}
+            {(analysisData.clearNextSteps || analysisData.whenToWorry) && (
+              <div className="bg-card rounded-2xl p-6 shadow-lg">
+                <div className="flex items-center gap-3 mb-4">
+                  <AlertTriangle className="w-6 h-6 text-status-elevated" />
+                  <h2 className="text-xl font-semibold text-text-primary">Areas for Attention</h2>
+                </div>
+                <div className="space-y-4 text-text-secondary leading-relaxed">
+                  {analysisData.clearNextSteps && (
+                    <div>
+                      <h4 className="font-medium text-text-primary mb-2">Recommended Actions</h4>
+                      {renderMarkdownText(analysisData.clearNextSteps)}
+                    </div>
+                  )}
+                  {analysisData.whenToWorry && (
+                    <div>
+                      <h4 className="font-medium text-text-primary mb-2">When to Seek Medical Attention</h4>
+                      {renderMarkdownText(analysisData.whenToWorry)}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Meddy's Take - moved here after Areas for Attention */}
         {analysisData.meddysTake && (
@@ -316,7 +370,7 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ analysisData, onStart
         {/* Medical Disclaimer - moved after Meddy's Take */}
         <div className="bg-medical-warning/5 border border-medical-warning/20 rounded-2xl p-6">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-medical-warning mt-0.5 flex-shrink-0" />
+            {/* <AlertTriangle className="w-5 h-5 text-medical-warning mt-0.5 flex-shrink-0" /> */}
             <div>
               <h3 className="font-semibold text-medical-warning mb-2">Medical Disclaimer</h3>
               <div className="text-text-secondary leading-relaxed font-semibold">
