@@ -138,7 +138,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ analysisData, messages, s
         {/* Key Values */}
         <div className="space-y-3">
           <div className="bg-card-hover rounded-lg p-3">
-            <h4 className="text-sm font-medium text-text-primary mb-2">Blood Test Results</h4>
+            <h4 className="text-sm font-medium text-text-primary mb-2">Test Results</h4>
             <div className="text-xs text-text-secondary">July 20, 2025</div>
           </div>
           
